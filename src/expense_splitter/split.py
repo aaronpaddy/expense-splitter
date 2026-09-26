@@ -15,7 +15,11 @@ def split_equally(total_cents: int, people: Sequence[str]) -> dict[str, int]:
     if not people:
         raise ValueError("people must not be empty")
     share = total_cents // len(people)
-    return {person: share for person in people}
+    leftover = total_cents - share * len(people)
+    shares = {person: share for person in people}
+    for person in people[:leftover]:
+        shares[person] += 1
+    return shares
 
 
 def split_by_weights(total_cents: int, weights: Mapping[str, int]) -> dict[str, int]:
