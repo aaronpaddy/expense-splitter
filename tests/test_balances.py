@@ -12,3 +12,10 @@ def test_balances_accumulate_across_expenses():
         Expense("bob", 200, ("ann", "bob")),
     ]
     assert balances(expenses) == {"ann": 200, "bob": -200}
+
+
+def test_balances_sum_to_zero_when_split_is_uneven():
+    dinner = Expense("ann", 100, ("ann", "bob", "cy"), "dinner")
+    result = balances([dinner])
+    assert result == {"ann": 66, "bob": -33, "cy": -33}
+    assert sum(result.values()) == 0
