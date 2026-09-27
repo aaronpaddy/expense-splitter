@@ -39,3 +39,13 @@ def test_split_by_weights_exact_proportions():
 def test_split_by_weights_distributes_leftover_to_largest_weights():
     shares = split_by_weights(100, {"ann": 1, "bob": 1, "cy": 1})
     assert sum(shares.values()) == 100
+
+
+def test_split_by_weights_rejects_all_zero_weights():
+    with pytest.raises(ValueError):
+        split_by_weights(100, {"ann": 0, "bob": 0})
+
+
+def test_split_by_weights_rejects_empty_weights():
+    with pytest.raises(ValueError):
+        split_by_weights(100, {})
