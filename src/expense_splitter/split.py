@@ -28,7 +28,11 @@ def split_by_weights(total_cents: int, weights: Mapping[str, int]) -> dict[str, 
     Each share is rounded down, then the leftover cents go one each to the
     people with the largest weights, so the shares add up to total_cents.
     """
+    if not weights:
+        raise ValueError("weights must not be empty")
     total_weight = sum(weights.values())
+    if total_weight == 0:
+        raise ValueError("weights must not all be zero")
     shares = {
         person: total_cents * weight // total_weight
         for person, weight in weights.items()
