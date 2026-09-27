@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections import defaultdict
 from collections.abc import Iterable, Mapping
 
-from expense_splitter.models import Expense, Transfer
+from expense_splitter.models import Expense, Transfer, format_cents
 from expense_splitter.split import split_equally
 
 
@@ -52,3 +52,12 @@ def settle_up(net_balances: Mapping[str, int]) -> list[Transfer]:
         if debt_left[j] == 0:
             j += 1
     return transfers
+
+
+def format_transfers(transfers: Iterable[Transfer]) -> list[str]:
+    """Render transfers as human-readable lines like "cy pays ann $40.00"."""
+    lines = []
+    for transfer in transfers:
+        amount = format_cents(transfer.amount_cents)
+        lines.append(f"{transfer.sender} pays {transfer.receiver} {amount}")
+    return lines

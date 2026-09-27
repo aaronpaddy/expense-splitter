@@ -15,7 +15,7 @@ Requires Python 3.11+. No runtime dependencies.
 ## Usage
 
 ```python
-from expense_splitter import Expense, balances, format_cents, settle_up, to_cents
+from expense_splitter import Expense, balances, format_transfers, settle_up, to_cents
 
 expenses = [
     Expense("ann", to_cents("90.00"), ("ann", "bob", "cy"), "dinner"),
@@ -25,8 +25,8 @@ expenses = [
 net = balances(expenses)
 # {'ann': 5000, 'bob': -1000, 'cy': -4000}  (positive = is owed, negative = owes)
 
-for transfer in settle_up(net):
-    print(f"{transfer.sender} pays {transfer.receiver} {format_cents(transfer.amount_cents)}")
+for line in format_transfers(settle_up(net)):
+    print(line)
 # cy pays ann $40.00
 # bob pays ann $10.00
 ```
@@ -41,6 +41,7 @@ for transfer in settle_up(net):
 | `split_by_weights(total_cents, weights)` | Divide a total in proportion to integer weights |
 | `balances(expenses)` | Net amount each person is owed (positive) or owes (negative) |
 | `settle_up(net_balances)` | Transfers that bring every balance to zero |
+| `format_transfers(transfers)` | Render transfers as readable lines like `"cy pays ann $40.00"` |
 
 ## Development
 
