@@ -18,11 +18,37 @@ def to_cents(amount: str | Decimal) -> int:
     return int(cents)
 
 
-def format_cents(cents: int) -> str:
-    """Render integer cents as a dollar string, e.g. 1250 -> "$12.50"."""
+#: Currency symbols for supported ISO 4217 currency codes.
+CURRENCY_SYMBOLS = {
+    "USD": "$",
+    "EUR": "\u20ac",
+    "GBP": "\u00a3",
+}
+
+DEFAULT_CURRENCY = "USD"
+
+
+def format_cents(cents: int, currency: str = DEFAULT_CURRENCY) -> str:
+    """Render integer cents as a currency string, e.g. 1250 -> "$12.50".
+
+    Args:
+        cents: The amount in integer cents.
+        currency: An ISO 4217 currency code, e.g. "USD", "EUR" or "GBP".
+            Defaults to "USD".
+
+    Raises:
+        ValueError: if the currency code isn't supported.
+    """
+    try:
+        symbol = CURRENCY_SYMBOLS[currency.upper()]
+    except KeyError:
+        supported = ", ".join(sorted(CURRENCY_SYMBOLS))
+        raise ValueError(
+            f"unsupported currency {currency!r}; supported currencies: {supported}"
+        ) from None
     sign = "-" if cents < 0 else ""
     dollars, remainder = divmod(abs(cents), 100)
-    return f"{sign}${dollars}.{remainder:02d}"
+    return f"{sign}{symbol}{dollars}.{remainder:02d}"
 
 
 @dataclass(frozen=True)

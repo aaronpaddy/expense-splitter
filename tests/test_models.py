@@ -1,5 +1,7 @@
 from decimal import Decimal
 
+import pytest
+
 from expense_splitter import format_cents, to_cents
 
 
@@ -22,3 +24,24 @@ def test_format_cents():
 
 def test_format_cents_negative():
     assert format_cents(-1250) == "-$12.50"
+
+
+def test_format_cents_eur():
+    assert format_cents(1250, "EUR") == "\u20ac12.50"
+
+
+def test_format_cents_gbp():
+    assert format_cents(1250, "GBP") == "\u00a312.50"
+
+
+def test_format_cents_currency_code_is_case_insensitive():
+    assert format_cents(1250, "eur") == "\u20ac12.50"
+
+
+def test_format_cents_negative_with_currency():
+    assert format_cents(-1250, "EUR") == "-\u20ac12.50"
+
+
+def test_format_cents_unsupported_currency_raises():
+    with pytest.raises(ValueError, match="unsupported currency"):
+        format_cents(1250, "JPY")

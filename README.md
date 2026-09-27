@@ -29,19 +29,31 @@ for line in format_transfers(settle_up(net)):
     print(line)
 # cy pays ann $40.00
 # bob pays ann $10.00
+
+for line in format_transfers(settle_up(net), "EUR"):
+    print(line)
+# cy pays ann €40.00
+# bob pays ann €10.00
 ```
+
+Amounts are always stored and split as plain integer cents with no currency
+attached; the currency code is only used when formatting for display, and no
+conversion between currencies is performed.
 
 ### API
 
 | Function | What it does |
 |---|---|
 | `to_cents(amount)` | Convert `"12.50"` to `1250` (halves round up) |
-| `format_cents(cents)` | Convert `1250` to `"$12.50"` |
+| `format_cents(cents, currency="USD")` | Convert `1250` to `"$12.50"`, or `"€12.50"`/`"£12.50"` for `"EUR"`/`"GBP"` |
 | `split_equally(total_cents, people)` | Divide a total evenly among people |
 | `split_by_weights(total_cents, weights)` | Divide a total in proportion to integer weights |
 | `balances(expenses)` | Net amount each person is owed (positive) or owes (negative) |
 | `settle_up(net_balances)` | Transfers that bring every balance to zero |
-| `format_transfers(transfers)` | Render transfers as readable lines like `"cy pays ann $40.00"` |
+| `format_transfers(transfers, currency="USD")` | Render transfers as readable lines like `"cy pays ann $40.00"` |
+
+Supported currency codes: `USD`, `EUR`, `GBP` (case-insensitive). Passing any
+other code raises `ValueError`.
 
 ## Development
 

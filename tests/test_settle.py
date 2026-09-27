@@ -85,3 +85,14 @@ def test_format_transfers_renders_readable_lines():
 
 def test_format_transfers_empty_input_returns_empty_list():
     assert format_transfers([]) == []
+
+
+def test_format_transfers_with_currency():
+    transfers = [Transfer("cy", "ann", 1250)]
+    assert format_transfers(transfers, "EUR") == ["cy pays ann \u20ac12.50"]
+
+
+def test_format_transfers_unsupported_currency_raises():
+    transfers = [Transfer("cy", "ann", 1250)]
+    with pytest.raises(ValueError, match="unsupported currency"):
+        format_transfers(transfers, "JPY")

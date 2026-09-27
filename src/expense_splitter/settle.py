@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections import defaultdict
 from collections.abc import Iterable, Mapping
 
-from expense_splitter.models import Expense, Transfer, format_cents
+from expense_splitter.models import DEFAULT_CURRENCY, Expense, Transfer, format_cents
 from expense_splitter.split import split_equally
 
 
@@ -64,10 +64,18 @@ def settle_up(net_balances: Mapping[str, int]) -> list[Transfer]:
     return transfers
 
 
-def format_transfers(transfers: Iterable[Transfer]) -> list[str]:
-    """Render transfers as human-readable lines like "cy pays ann $40.00"."""
+def format_transfers(
+    transfers: Iterable[Transfer], currency: str = DEFAULT_CURRENCY
+) -> list[str]:
+    """Render transfers as human-readable lines like "cy pays ann $40.00".
+
+    Args:
+        transfers: The transfers to render.
+        currency: An ISO 4217 currency code, e.g. "USD", "EUR" or "GBP".
+            Defaults to "USD".
+    """
     lines = []
     for transfer in transfers:
-        amount = format_cents(transfer.amount_cents)
+        amount = format_cents(transfer.amount_cents, currency)
         lines.append(f"{transfer.sender} pays {transfer.receiver} {amount}")
     return lines
