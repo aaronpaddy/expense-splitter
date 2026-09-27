@@ -1,5 +1,7 @@
 from collections import defaultdict
 
+import pytest
+
 from expense_splitter import Transfer, format_transfers, settle_up
 
 
@@ -62,6 +64,12 @@ def test_settle_up_is_deterministic_on_ties():
         Transfer("bob", "ann", 1000),
         Transfer("yan", "zed", 1000),
     ]
+
+
+def test_settle_up_raises_when_balances_do_not_sum_to_zero():
+    net = {"ann": 100, "bob": -40}
+    with pytest.raises(ValueError, match="sum to zero"):
+        settle_up(net)
 
 
 def test_format_transfers_renders_readable_lines():

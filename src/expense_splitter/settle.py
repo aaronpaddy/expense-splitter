@@ -28,7 +28,17 @@ def settle_up(net_balances: Mapping[str, int]) -> list[Transfer]:
 
     Greedy: the biggest debtor pays the biggest creditor until one of them is
     square, then moves on. Ties are broken alphabetically so output is stable.
+
+    Raises:
+        ValueError: if the balances don't sum to zero.
     """
+    total = sum(net_balances.values())
+    if total != 0:
+        raise ValueError(
+            f"net balances must sum to zero, got {total} cents instead: "
+            f"{dict(net_balances)}"
+        )
+
     creditors = sorted(
         ((person, amount) for person, amount in net_balances.items() if amount > 0),
         key=lambda pair: (-pair[1], pair[0]),
